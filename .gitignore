@@ -216,3 +216,41 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node / Expo / React Native
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+ios/
+android/
+*.ipa
+*.apk
+*.aab
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.pnpm-debug.*
+metro-cache/
+.turbo/
+
+# EAS
+eas-cli-*.log
+
+# API cache
+services/api/.cache/
+services/api/.cache-test/
+services/api/.pytest_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

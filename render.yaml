@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: saha-api
+    runtime: docker
+    dockerfilePath: ./services/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: SEARCH_PROVIDER
+        value: brave
+      - key: LLM_MODEL
+        value: gpt-4o-mini
+      - key: CACHE_DIR
+        value: /app/.cache

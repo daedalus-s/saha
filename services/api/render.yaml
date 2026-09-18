@@ -1,0 +1,18 @@
+# Render Blueprint — from the repo root: `render.yaml` is also copied to the root.
+# Use this file as a reference or point Render at services/api if the dashboard allows it.
+services:
+  - type: web
+    name: saha-api
+    runtime: docker
+    dockerfilePath: ./services/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: SEARCH_PROVIDER
+        value: brave
+      - key: LLM_MODEL
+        value: gpt-4o-mini
+      - key: CACHE_DIR
+        value: /app/.cache
