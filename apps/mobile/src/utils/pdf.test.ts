@@ -1,4 +1,4 @@
-import { buildPdfHtml } from "./pdf";
+import { buildPdfHtml, pdfFileName } from "./pdf";
 
 describe("buildPdfHtml", () => {
   test("includes title, verses, meaning disclaimer, and escapes HTML", () => {
@@ -31,5 +31,11 @@ describe("buildPdfHtml", () => {
     });
     expect(html).toContain("AI-generated lyrics (Gemini)");
     expect(html).not.toContain("saha://");
+  });
+});
+
+describe("pdfFileName", () => {
+  test("slugifies a title", () => {
+    expect(pdfFileName("Hanuman Chalisa")).toBe("hanuman-chalisa.pdf");
   });
 });

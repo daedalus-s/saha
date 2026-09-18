@@ -1,11 +1,12 @@
 import { useState } from "react";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
 import { api } from "../api/client";
 import type { SlokaVersion } from "../api/types";
 import { useConsent } from "../store/consent";
-import { buildPdfHtml } from "../utils/pdf";
+import { buildPdfHtml, pdfFileName } from "../utils/pdf";
 import { scriptLabel } from "../utils/scripts";
 
 export function useSlokaActions(sloka: SlokaVersion | null) {
@@ -84,9 +85,26 @@ export function useSlokaActions(sloka: SlokaVersion | null) {
         meanings: showMeaning ? meanings ?? undefined : undefined,
         aiGenerated: Boolean(sloka.ai_generated) || sloka.source_url.startsWith("saha://ai/"),
       });
-      const { uri } = await Print.printToFileAsync({ html });
+      const { base64 } = await Print.printToFileAsync({ html, base64: true });
+      if (!base64) {
+        throw new Error("PDF export produced an empty file.");
+      }
+      const directory = FileSystem.cacheDirectory;
+      if (!directory) {
+        throw new Error("No cache directory available for PDF export.");
+      }
+      const dest = `${directory}${pdfFileName(sloka.title)}`;
+      await FileSystem.writeAsStringAsync(dest, base64, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
       if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, { UTI: "com.adobe.pdf", mimeType: "application/pdf" });
+        await Sharing.shareAsync(dest, {
+          UTI: "com.adobe.pdf",
+          mimeType: "application/pdf",
+          dialogTitle: sloka.title,
+        });
+      } else {
+        await Print.printAsync({ uri: dest });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "PDF export failed");

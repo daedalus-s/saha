@@ -10,6 +10,16 @@ export type PdfInput = {
   aiGenerated?: boolean;
 };
 
+export function pdfFileName(title: string): string {
+  const slug = title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  return `${slug || "sloka"}.pdf`;
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
