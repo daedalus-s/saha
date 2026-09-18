@@ -82,6 +82,7 @@ export function useSlokaActions(sloka: SlokaVersion | null) {
         transliteration: xlit ?? undefined,
         transliterationScript: targetScript ? scriptLabel(targetScript) : undefined,
         meanings: showMeaning ? meanings ?? undefined : undefined,
+        aiGenerated: Boolean(sloka.ai_generated) || sloka.source_url.startsWith("saha://ai/"),
       });
       const { uri } = await Print.printToFileAsync({ html });
       if (await Sharing.isAvailableAsync()) {

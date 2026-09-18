@@ -2,14 +2,14 @@
 
 ## Data flow
 
-1. The app `POST /search { query }`. The API expands the query with script suffixes, calls Brave or Google CSE, merges and de-duplicates URLs, and returns ranked hits.
-2. The app `POST /extract { url }` in parallel for each hit. The API fetches the page (robots + size + timeout), extracts main content, asks the LLM (or heuristic fallback) for JSON verses, detects script, and returns a `SlokaVersion` with an SLP1 fingerprint.
+1. The app `POST /search { query, script }`. With `SEARCH_PROVIDER=gemini` (default), the API asks Gemini for the lyrics in the selected script and returns them as a `SlokaVersion` (plus a synthetic hit). Brave / Google CSE remain available behind `SEARCH_PROVIDER`.
+2. If the response includes `versions`, the app shows them immediately. Otherwise it `POST /extract { url }` in parallel for each web hit (mock/Brave path).
 3. The app groups versions by fingerprint (and near-duplicate similarity) and lets the user filter by script.
 4. `POST /transliterate` maps verses through `indic-transliteration` (no LLM). Tamil uses superscript-numeral mode so Sanskrit consonants Tamil cannot write are preserved.
 5. `POST /translate` asks the LLM for a verse-by-verse English meaning. We generate this ourselves rather than copying a site translation.
 6. The app builds HTML and prints a PDF with `expo-print`, then shares it with `expo-sharing`.
 
-The two-phase search keeps the API stateless and lets results appear incrementally.
+Gemini lyrics are labelled AI-generated. Web extract remains incremental when a search provider returns URLs.
 
 ## Scripts
 

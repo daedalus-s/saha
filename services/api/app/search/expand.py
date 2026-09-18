@@ -18,11 +18,11 @@ SCRIPT_QUERY_VARIANTS = (
 def expand_queries(name: str) -> list[str]:
     q = name.strip()
     queries = [
-        f'"{q}" sloka OR mantra OR stotra',
-        f'"{q}" ({" OR ".join(SCRIPT_QUERY_VARIANTS)})',
-        f'"{q}" lyrics',
+        q,
+        f"{q} sloka mantra stotra",
+        f"{q} lyrics",
+        f"{q} ({' OR '.join(SCRIPT_QUERY_VARIANTS)})",
     ]
-    # Preserve order, drop exact duplicates
     seen: set[str] = set()
     out: list[str] = []
     for item in queries:

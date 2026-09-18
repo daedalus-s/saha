@@ -149,9 +149,11 @@ async def terms():
 @limiter.limit("20/minute")
 async def search(request: Request, body: SearchRequest):
     try:
-        return await search_sloka(body.query)
+        return await search_sloka(body.query, script=body.script)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"Search failed: {exc}") from exc
 

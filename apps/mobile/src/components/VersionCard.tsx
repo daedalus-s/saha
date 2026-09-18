@@ -3,6 +3,7 @@ import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import type { GroupedVersion } from "../api/types";
 import { colors } from "../theme";
 import { fontForScript } from "../utils/fonts";
+import { isAiGenerated } from "../utils/source";
 import { scriptLabel } from "../utils/scripts";
 
 type Props = {
@@ -23,15 +24,16 @@ export function VersionCard({ version, onPress }: Props) {
         {preview}
       </Text>
       <Text style={styles.meta}>
-        {version.source_domain}
+        {isAiGenerated(version) ? "AI-generated lyrics" : version.source_domain}
         {extra ? ` · also on ${extra} other site${extra === 1 ? "" : "s"}` : ""}
       </Text>
-      <Text
-        style={styles.link}
-        onPress={() => Linking.openURL(version.source_url)}
-      >
-        Open source
-      </Text>
+      {isAiGenerated(version) ? (
+        <Text style={styles.meta}>Verify with a printed edition.</Text>
+      ) : (
+        <Text style={styles.link} onPress={() => Linking.openURL(version.source_url)}>
+          Open source
+        </Text>
+      )}
     </Pressable>
   );
 }

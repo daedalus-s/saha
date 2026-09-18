@@ -66,7 +66,8 @@ export const api = {
     return response.json() as Promise<{ status: string }>;
   },
 
-  search: (query: string) => request<SearchResponse>("/search", { query }),
+  search: (query: string, script?: string) =>
+    request<SearchResponse>("/search", { query, script: script || "devanagari" }),
 
   extract: (url: string, query?: string) => request<ExtractResponse>("/extract", { url, query }),
 

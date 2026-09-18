@@ -8,6 +8,7 @@ export type SearchHit = {
 export type SearchResponse = {
   hits: SearchHit[];
   expanded_queries: string[];
+  versions?: SlokaVersion[];
 };
 
 export type SlokaVersion = {
@@ -21,6 +22,7 @@ export type SlokaVersion = {
   deity?: string | null;
   category?: string | null;
   also_on: string[];
+  ai_generated?: boolean;
 };
 
 export type ExtractResponse = {
@@ -56,4 +58,5 @@ export type SavedItem = {
   source_domain: string;
   fingerprint: string;
   savedAt: string;
+  ai_generated?: boolean;
 };

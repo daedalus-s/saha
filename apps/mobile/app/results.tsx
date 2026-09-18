@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { LyricsDisclaimer } from "../src/components/LyricsDisclaimer";
 import { ScriptChips } from "../src/components/ScriptChips";
 import { VersionCard } from "../src/components/VersionCard";
 import { useSearchSession } from "../src/store/session";
@@ -31,11 +32,22 @@ export default function ResultsScreen() {
   ).length;
   const errors = Object.values(byUrl).filter((status) => status.state === "error").length;
 
-  if (!hits.length) {
+  if (!query) {
     return (
       <View style={styles.empty}>
         <Text style={styles.emptyTitle}>No search yet</Text>
         <Text style={styles.emptyBody}>Go back and enter a sloka or mantra name.</Text>
+      </View>
+    );
+  }
+
+  if (!hits.length) {
+    return (
+      <View style={styles.empty}>
+        <Text style={styles.emptyTitle}>No lyrics found</Text>
+        <Text style={styles.emptyBody}>
+          Nothing came back for “{query}”. Try another spelling or a different script.
+        </Text>
       </View>
     );
   }
@@ -48,6 +60,7 @@ export default function ResultsScreen() {
         {pending ? ` · still reading ${pending} page${pending === 1 ? "" : "s"}` : ""}
         {errors ? ` · ${errors} page${errors === 1 ? "" : "s"} skipped` : ""}
       </Text>
+      {grouped.some((item) => item.ai_generated) ? <LyricsDisclaimer /> : null}
       {pending ? <ActivityIndicator color={colors.saffron} style={{ marginVertical: 8 }} /> : null}
       {scripts.length ? (
         <ScriptChips scripts={scripts} selected={script} onSelect={setScript} />

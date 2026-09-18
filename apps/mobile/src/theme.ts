@@ -12,3 +12,4 @@ export const colors = {
 };
 
 export const DISCLAIMER = "AI-generated meaning; verify with a scholar.";
+export const LYRICS_DISCLAIMER = "AI-generated lyrics; verify with a printed edition.";

@@ -38,11 +38,7 @@ class SearchHit(BaseModel):
 
 class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=200)
-
-
-class SearchResponse(BaseModel):
-    hits: list[SearchHit]
-    expanded_queries: list[str] = []
+    script: str = Field(default="devanagari", max_length=32)
 
 
 class ExtractRequest(BaseModel):
@@ -61,6 +57,13 @@ class SlokaVersion(BaseModel):
     deity: str | None = None
     category: str | None = None
     also_on: list[str] = []
+    ai_generated: bool = False
+
+
+class SearchResponse(BaseModel):
+    hits: list[SearchHit]
+    expanded_queries: list[str] = []
+    versions: list[SlokaVersion] = []
 
 
 class ExtractResponse(BaseModel):

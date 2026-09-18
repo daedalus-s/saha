@@ -217,6 +217,9 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Local toolchain (portable Node for Expo)
+.tools/
+
 # Node / Expo / React Native
 node_modules/
 .expo/

@@ -19,9 +19,15 @@ class BraveSearchProvider:
     async def search(self, query: str, count: int = 10) -> list[SearchHit]:
         headers = {
             "Accept": "application/json",
+            "Accept-Encoding": "gzip",
             "X-Subscription-Token": self.api_key,
         }
-        params = {"q": query, "count": min(count, 20)}
+        params = {
+            "q": query,
+            "count": min(count, 20),
+            "result_filter": "web",
+            "operators": "true",
+        }
         if self._client is not None:
             response = await self._client.get(self.endpoint, headers=headers, params=params)
             response.raise_for_status()

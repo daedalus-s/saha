@@ -38,12 +38,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
-  newArchEnabled: true,
-  splash: {
-    image: "./assets/splash-icon.png",
-    resizeMode: "contain",
-    backgroundColor: "#FBF6EE",
-  },
   ios: {
     supportsTablet: false,
     bundleIdentifier: "com.saha.sloka",
@@ -81,12 +75,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     "expo-router",
     "expo-font",
-    "expo-print",
     [
       "expo-splash-screen",
       {
         backgroundColor: "#FBF6EE",
         image: "./assets/splash-icon.png",
+        resizeMode: "contain",
       },
     ],
   ],

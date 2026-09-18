@@ -9,8 +9,8 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: SEARCH_PROVIDER
-        value: brave
+        value: gemini
       - key: LLM_MODEL
-        value: gpt-4o-mini
+        value: gemini/gemini-2.0-flash
       - key: CACHE_DIR
         value: /app/.cache

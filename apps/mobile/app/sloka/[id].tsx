@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { ConsentSheet } from "../../src/components/ConsentSheet";
+import { LyricsDisclaimer } from "../../src/components/LyricsDisclaimer";
 import { MeaningDisclaimer } from "../../src/components/MeaningDisclaimer";
 import { ScriptChips } from "../../src/components/ScriptChips";
 import { useSlokaActions } from "../../src/hooks/useSlokaActions";
@@ -20,6 +21,7 @@ import { useSearchSession } from "../../src/store/session";
 import { colors } from "../../src/theme";
 import { fontForScript } from "../../src/utils/fonts";
 import { SCRIPTS, scriptLabel } from "../../src/utils/scripts";
+import { isAiGenerated } from "../../src/utils/source";
 
 export default function SlokaDetailScreen() {
   useLocalSearchParams<{ id: string }>();
@@ -67,9 +69,13 @@ export default function SlokaDetailScreen() {
         {scriptLabel(version.script)}
         {version.deity ? ` · ${version.deity}` : ""} · {version.source_domain}
       </Text>
-      <Text style={styles.link} onPress={() => Linking.openURL(version.source_url)}>
-        Source page
-      </Text>
+      {isAiGenerated(version) ? (
+        <LyricsDisclaimer />
+      ) : (
+        <Text style={styles.link} onPress={() => Linking.openURL(version.source_url)}>
+          Source page
+        </Text>
+      )}
 
       <Text style={styles.section}>Transliterate into</Text>
       <ScriptChips

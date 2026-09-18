@@ -14,10 +14,12 @@ import {
 
 import { API_URL, api } from "../../src/api/client";
 import { ConsentSheet } from "../../src/components/ConsentSheet";
+import { ScriptChips } from "../../src/components/ScriptChips";
 import { useConsent } from "../../src/store/consent";
 import { useHistory } from "../../src/store/history";
 import { useSearchSession } from "../../src/store/session";
 import { colors } from "../../src/theme";
+import { SCRIPTS } from "../../src/utils/scripts";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -28,6 +30,7 @@ export default function SearchScreen() {
   const accept = useConsent((state) => state.accept);
   const withdraw = useConsent((state) => state.withdraw);
   const [query, setQuery] = useState("");
+  const [script, setScript] = useState<string>("devanagari");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sheetVisible, setSheetVisible] = useState(false);
@@ -44,14 +47,25 @@ export default function SearchScreen() {
     setBusy(true);
     setError(null);
     try {
-      const result = await api.search(trimmed);
+      const result = await api.search(trimmed, script);
       addRecent(trimmed);
-      useSearchSession.getState().start(trimmed, result.hits);
-      router.push("/results");
-      void useSearchSession.getState().extractAll(
-        trimmed,
-        result.hits.map((hit) => hit.url),
-      );
+      const session = useSearchSession.getState();
+      session.start(trimmed, result.hits, result.versions);
+      if (!result.versions?.length && result.hits.length) {
+        await session.extractAll(
+          trimmed,
+          result.hits.map((hit) => hit.url),
+        );
+      }
+      const versions = useSearchSession.getState().readyVersions();
+      const chosen =
+        versions.find((version) => version.script === script) ?? versions[0];
+      if (!chosen) {
+        setError("No lyrics found. Try another spelling or a different script.");
+        return;
+      }
+      useSearchSession.getState().select(chosen);
+      router.push("/sloka/view");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Search failed");
     } finally {
@@ -88,7 +102,8 @@ export default function SearchScreen() {
       />
       <Text style={styles.kicker}>Find a sloka or mantra</Text>
       <Text style={styles.lede}>
-        Search the web for versions in different scripts, transliterate, add an English meaning, and export a PDF.
+        Pick a script, type a sloka or mantra name, and Gemini returns the lyrics. Then
+        transliterate, add an English meaning, and export a PDF.
       </Text>
       <View style={styles.searchBox}>
         <TextInput
@@ -100,6 +115,13 @@ export default function SearchScreen() {
           autoCorrect={false}
           returnKeyType="search"
           onSubmitEditing={() => runSearch(query)}
+        />
+        <Text style={styles.section}>Lyrics script</Text>
+        <ScriptChips
+          scripts={[...SCRIPTS]}
+          selected={script}
+          onSelect={(value) => setScript(value ?? "devanagari")}
+          includeAll={false}
         />
         <Pressable
           style={[styles.button, busy && styles.buttonDisabled]}
@@ -137,8 +159,8 @@ export default function SearchScreen() {
       ) : null}
 
       <Text style={styles.footer}>
-        Verse text is shown with a link to the page it was found on. English meanings are
-        AI-generated; verify with a scholar.{" "}
+        Lyrics are AI-generated and labelled as such; verify with a printed edition. English
+        meanings are also AI-generated; verify with a scholar.{" "}
         <Text style={styles.link} onPress={() => Linking.openURL(`${API_URL}/privacy`)}>
           Privacy policy
         </Text>

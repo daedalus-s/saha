@@ -16,7 +16,7 @@ type SessionState = {
   hits: SearchHit[];
   byUrl: Record<string, HitStatus>;
   selected: SlokaVersion | null;
-  start: (query: string, hits: SearchHit[]) => void;
+  start: (query: string, hits: SearchHit[], versions?: SlokaVersion[]) => void;
   markLoading: (url: string) => void;
   applyExtract: (url: string, result: ExtractResponse) => void;
   markError: (url: string, message: string) => void;
@@ -30,10 +30,22 @@ export const useSearchSession = create<SessionState>((set, get) => ({
   hits: [],
   byUrl: {},
   selected: null,
-  start: (query, hits) => {
+  start: (query, hits, versions = []) => {
+    const resolvedHits =
+      hits.length > 0
+        ? hits
+        : versions.map((version) => ({
+            url: version.source_url,
+            title: version.title,
+            snippet: "",
+            source_domain: version.source_domain,
+          }));
     const byUrl: Record<string, HitStatus> = {};
-    for (const hit of hits) byUrl[hit.url] = { state: "pending" };
-    set({ query, hits, byUrl, selected: null });
+    for (const hit of resolvedHits) byUrl[hit.url] = { state: "pending" };
+    for (const version of versions) {
+      byUrl[version.source_url] = { state: "ready", version };
+    }
+    set({ query, hits: resolvedHits, byUrl, selected: null });
   },
   markLoading: (url) =>
     set((state) => ({ byUrl: { ...state.byUrl, [url]: { state: "loading" } } })),

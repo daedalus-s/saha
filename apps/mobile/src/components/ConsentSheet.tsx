@@ -20,11 +20,10 @@ export function ConsentSheet({ visible, onContinue, onNotNow }: Props) {
             including third-party AI.
           </Text>
           <Text style={styles.body}>
-            The sloka or mantra name you type is sent to our server and then to a web search
-            provider so we can find candidate pages. We fetch those pages on the server. Page text
-            (and your search name) may be sent to an AI language-model provider to extract verses.
-            If you later tap Show meaning, verse text is sent to an AI language-model provider to
-            generate an English meaning.
+            The sloka or mantra name you type, and the script you select, are sent to our server
+            and then to a third-party AI (Gemini) so it can return the lyrics. If you later tap
+            Show meaning, verse text is sent to an AI language-model provider to generate an
+            English meaning.
           </Text>
           <Text style={styles.body}>
             We do not sell this data. You can withdraw permission on the Search screen; new searches

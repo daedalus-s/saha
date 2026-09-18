@@ -30,6 +30,7 @@ export const useSaved = create<SavedState>()(
           source_domain: version.source_domain,
           fingerprint: version.fingerprint,
           savedAt: new Date().toISOString(),
+          ai_generated: version.ai_generated,
         };
         set({ items: [item, ...get().items] });
       },

@@ -7,6 +7,7 @@ export type PdfInput = {
   transliteration?: string[];
   transliterationScript?: string;
   meanings?: string[];
+  aiGenerated?: boolean;
 };
 
 function escapeHtml(value: string): string {
@@ -34,6 +35,11 @@ export function buildPdfHtml(input: PdfInput): string {
          ${input.meanings.map((m) => `<p class="meaning">${escapeHtml(m)}</p>`).join("\n")}
          <p class="disclaimer">AI-generated meaning; verify with a scholar.</p>`
       : "";
+  const sourceMeta = input.aiGenerated
+    ? `<p class="meta">Source: AI-generated lyrics (Gemini); verify with a printed edition.<br/>
+  Script: ${escapeHtml(input.originalScript)} · Generated ${escapeHtml(input.generatedAt)}</p>`
+    : `<p class="meta">Source: <a href="${escapeHtml(input.sourceUrl)}">${escapeHtml(input.sourceUrl)}</a><br/>
+  Script: ${escapeHtml(input.originalScript)} · Generated ${escapeHtml(input.generatedAt)}</p>`;
 
   return `<!doctype html>
 <html>
@@ -55,8 +61,7 @@ export function buildPdfHtml(input: PdfInput): string {
 </head>
 <body>
   <h1>${escapeHtml(input.title)}</h1>
-  <p class="meta">Source: <a href="${escapeHtml(input.sourceUrl)}">${escapeHtml(input.sourceUrl)}</a><br/>
-  Script: ${escapeHtml(input.originalScript)} · Generated ${escapeHtml(input.generatedAt)}</p>
+  ${sourceMeta}
   <h2>Original</h2>
   ${original}
   ${xlit}

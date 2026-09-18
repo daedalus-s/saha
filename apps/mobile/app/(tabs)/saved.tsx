@@ -23,6 +23,7 @@ export default function SavedScreen() {
       fingerprint: item.fingerprint,
       normalized: "",
       also_on: [],
+      ai_generated: item.ai_generated,
     };
     select(version);
     router.push("/sloka/saved");

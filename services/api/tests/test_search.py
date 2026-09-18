@@ -4,8 +4,9 @@ from app.search.mock import MockSearchProvider
 from app.search import search_sloka
 
 
-def test_expand_queries_includes_script_variants():
+def test_expand_queries_starts_with_the_raw_name():
     queries = expand_queries("Hanuman Chalisa")
+    assert queries[0] == "Hanuman Chalisa"
     blob = " ".join(queries).lower()
     assert "hanuman chalisa" in blob
     assert "telugu" in blob
@@ -33,3 +34,19 @@ async def test_mock_search_returns_hits():
     result = await search_sloka("Hanuman Chalisa", provider=MockSearchProvider())
     assert result.hits
     assert result.expanded_queries
+
+
+class _FailingProvider:
+    name = "fail"
+
+    async def search(self, query: str, count: int = 10):
+        raise RuntimeError(f"provider down for {query}")
+
+
+async def test_search_surfaces_provider_failures():
+    try:
+        await search_sloka("Hanuman Chalisa", provider=_FailingProvider())
+    except RuntimeError as exc:
+        assert "provider down" in str(exc)
+    else:
+        raise AssertionError("expected provider failure to raise")

@@ -19,4 +19,17 @@ describe("buildPdfHtml", () => {
     expect(html).toContain("https://example.org/g");
     expect(html).not.toContain("Gayatri <Mantra>");
   });
+
+  test("labels Gemini lyrics instead of a web source", () => {
+    const html = buildPdfHtml({
+      title: "Hanuman Chalisa",
+      sourceUrl: "saha://ai/gemini/devanagari/hanuman-chalisa",
+      generatedAt: "2026-09-17",
+      original: ["श्रीगुरु चरन सरोज रज"],
+      originalScript: "Devanagari",
+      aiGenerated: true,
+    });
+    expect(html).toContain("AI-generated lyrics (Gemini)");
+    expect(html).not.toContain("saha://");
+  });
 });
