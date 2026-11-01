@@ -91,8 +91,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     apiUrl: resolveApiUrl(),
     appKey: resolveAppKey(),
     eas: {
-      projectId: process.env.EAS_PROJECT_ID,
+      projectId: "7e55fdfd-58c9-4d63-8399-3ed8cd88e3fb",
     },
   },
-  owner: process.env.EXPO_OWNER,
+  owner: "sreeni-appdev",
 });

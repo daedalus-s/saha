@@ -13,7 +13,7 @@ Brave / Google CSE keys are optional and only needed if you set `SEARCH_PROVIDER
 
 1. Push this repo to GitHub.
 2. In the Render dashboard, New → Blueprint, and select the repo. Root [`render.yaml`](../render.yaml) defines `saha-api`.
-3. Set secret env vars in the dashboard: `GEMINI_API_KEY`, and copy the generated `APP_KEY`. Confirm `SEARCH_PROVIDER=gemini` and `LLM_MODEL=gemini/gemini-2.0-flash`.
+3. Set secret env vars in the dashboard: `GEMINI_API_KEY`, and copy the generated `APP_KEY`. Confirm `SEARCH_PROVIDER=gemini` and `LLM_MODEL=gemini/gemini-3.8-flash`.
 4. After deploy, `https://<service>.onrender.com/health` should return `"status": "ok"`.
 5. Privacy policy URL for App Store Connect: `https://<service>.onrender.com/privacy`
 6. Terms URL: `https://<service>.onrender.com/terms`
@@ -26,7 +26,7 @@ From the repo root:
 
 ```bash
 fly launch --config services/api/fly.toml --dockerfile services/api/Dockerfile --no-deploy
-fly secrets set APP_KEY=... GEMINI_API_KEY=... LLM_MODEL=gemini/gemini-2.0-flash SEARCH_PROVIDER=gemini
+fly secrets set APP_KEY=... GEMINI_API_KEY=... LLM_MODEL=gemini/gemini-3.8-flash SEARCH_PROVIDER=gemini
 fly deploy --config services/api/fly.toml --dockerfile services/api/Dockerfile
 ```
 

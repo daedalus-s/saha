@@ -3,6 +3,7 @@ from __future__ import annotations
 from urllib.parse import urlparse
 
 from app.models import SearchHit
+from app.transliterate import romanize_name
 
 SCRIPT_QUERY_VARIANTS = (
     "sanskrit",
@@ -23,6 +24,9 @@ def expand_queries(name: str) -> list[str]:
         f"{q} lyrics",
         f"{q} ({' OR '.join(SCRIPT_QUERY_VARIANTS)})",
     ]
+    roman = romanize_name(q)
+    if roman:
+        queries[1:1] = [roman, f"{roman} lyrics"]
     seen: set[str] = set()
     out: list[str] = []
     for item in queries:

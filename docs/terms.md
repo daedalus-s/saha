@@ -1,12 +1,12 @@
 # Terms of Use — Saha
 
-Last updated: 17 September 2026
+Last updated: 31 October 2026
 
 By using Saha you agree to these terms.
 
 ## The service
 
-Saha asks a third-party AI (Gemini) for Hindu sloka and mantra lyrics in a script you choose, can transliterate that text into another script, can generate an English meaning, and can export a PDF. Lyrics and meanings are AI-generated and may be incomplete, outdated, or incorrect.
+Saha asks a third-party AI (Gemini) for Hindu sloka and mantra lyrics in a script you choose, can transliterate that text into another script, can generate a meaning in English, Hindi, Tamil, Telugu, Kannada, Malayalam, Gujarati, or Bengali, and can export a PDF. Lyrics and meanings are AI-generated and may be incomplete, outdated, or incorrect.
 
 ## Content and attribution
 

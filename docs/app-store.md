@@ -29,7 +29,7 @@ After the record exists, paste the numeric Apple ID into `apps/mobile/eas.json` 
 | Age rating | 4+ on the current questionnaire (no unrestricted web, no user-generated chat) |
 | Privacy policy URL | `https://` plus the deployed API host, path `/privacy` (must open without login) |
 | Support URL | the GitHub repo or a simple page |
-| Description | Saha looks up Hindu sloka or mantra lyrics by name in a script you choose (via Gemini), transliterates the verses into another Indic script, can generate an English meaning, and exports a PDF. Lyrics and meanings are AI-generated and labelled as such. Differentiators: multi-script transliteration, side-by-side layout, on-device saved items, PDF export. |
+| Description | Saha looks up Hindu sloka or mantra lyrics by name in a script you choose (via Gemini), transliterates the verses into another Indic script, can generate a meaning in English, Hindi, Tamil, Telugu, Kannada, Malayalam, Gujarati, or Bengali, and exports a PDF. Lyrics and meanings are AI-generated and labelled as such. Differentiators: multi-script transliteration, side-by-side layout, on-device saved items, PDF export. |
 
 ## 3. App Privacy labels
 
@@ -50,7 +50,7 @@ Capture from the **submitted** production or TestFlight build, not a localhost E
 
 ## 5. Review notes (paste into App Review Information)
 
-> Saha looks up Hindu scripture (slokas/mantras) by name. On first search (and on Show meaning if the user has not already agreed) it shows a disclosure sheet: the typed name and selected script are sent to a third-party AI (Gemini) to return lyrics; Show meaning sends verse text to a third-party AI provider. The user must tap Continue before any of those sends; Not now cancels. Permission can be withdrawn on the Search screen. Lyrics are labelled “AI-generated lyrics; verify with a printed edition.” English meanings are labelled “AI-generated meaning; verify with a scholar.” There is no user login. Demo: accept the sheet, pick Devanagari, then type “Hanuman Chalisa” on the Search screen. Privacy policy: the `/privacy` path on the same host as the API.
+> Saha looks up Hindu scripture (slokas/mantras) by name. On first search (and before a meaning, if the user has not already agreed) it shows a disclosure sheet: the typed name and selected script are sent to a third-party AI (Gemini) to return lyrics; choosing a meaning language sends verse text to a third-party AI provider. The user must tap Continue before any of those sends; Not now cancels. Permission can be withdrawn on the Search screen. Lyrics are labelled “AI-generated lyrics; verify with a printed edition.” Meanings are labelled “AI-generated meaning; verify with a scholar.” There is no user login. Demo: accept the sheet, pick Devanagari, then type “Hanuman Chalisa” on the Search screen. Privacy policy: the `/privacy` path on the same host as the API.
 
 This addresses guideline 5.1.2(i) via the disclosure sheet. Lyrics are generated, not scraped from a third-party site.
 

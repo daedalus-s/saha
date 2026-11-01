@@ -1,4 +1,4 @@
-import { SCRIPTS, SCRIPT_LABELS } from "./scripts";
+import { detectQueryScript, SCRIPTS, SCRIPT_LABELS } from "./scripts";
 
 // Frozen list shared with services/api/app/models.py SUPPORTED_SCRIPTS.
 const FROZEN_SCRIPTS = [
@@ -21,5 +21,10 @@ describe("script lists", () => {
 
   test("labels cover every frozen script", () => {
     expect(Object.keys(SCRIPT_LABELS).sort()).toEqual([...FROZEN_SCRIPTS].sort());
+  });
+
+  test("detects a Tamil-script sloka name", () => {
+    expect(detectQueryScript("ஹனுமான் சாலிசா")).toBe("tamil");
+    expect(detectQueryScript("Hanuman Chalisa")).toBe("latin");
   });
 });

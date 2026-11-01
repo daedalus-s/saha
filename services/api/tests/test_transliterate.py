@@ -17,6 +17,16 @@ def test_devanagari_to_telugu():
     assert telugu != "राम"
 
 
+def test_romanize_name_skips_tamil_and_latin():
+    from app.transliterate import romanize_name
+
+    assert romanize_name("ஹனுமான் சாலிசா") is None
+    assert romanize_name("Hanuman Chalisa") is None
+    roman = romanize_name("हनुमान चालीसा")
+    assert roman
+    assert "hanum" in roman.casefold()
+
+
 def test_devanagari_to_tamil():
     tamil = transliterate_text("राम", "devanagari", "tamil")
     assert tamil

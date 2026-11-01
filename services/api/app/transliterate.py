@@ -79,6 +79,25 @@ def transliterate_verses(
 _NON_SLP1 = re.compile(r"[^A-Za-z0-9]+")
 
 
+def romanize_name(text: str, source_script: str | None = None) -> str | None:
+    """IAST hint for a name typed in an Indic script.
+
+    Tamil is omitted. Modern Tamil spellings do not mark every Sanskrit
+    consonant, and the library maps ச to jha, which would point a search at
+    the wrong word. Callers should keep the Tamil string as the lookup key.
+    """
+    script = (source_script or detect_script(text)).strip().lower()
+    if script in {"", "latin", "iast", "tamil"}:
+        return None
+    try:
+        roman = transliterate_text(text, script, "iast").strip()
+    except (ValueError, KeyError):
+        return None
+    if not roman or roman == text.strip():
+        return None
+    return roman
+
+
 def to_slp1(text: str, source_script: str | None = None) -> str:
     script = source_script or detect_script(text)
     if script == "latin":

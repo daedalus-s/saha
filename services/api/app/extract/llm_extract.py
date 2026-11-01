@@ -7,6 +7,7 @@ import re
 from typing import Any
 
 from app.config import get_settings
+from app.llm import completion_kwargs
 from app.llm_json import parse_json_payload
 from app.scripts.detect import detect_script, script_char_count
 
@@ -97,7 +98,7 @@ async def llm_extract(text: str, url: str, query: str | None = None) -> dict[str
             {"role": "system", "content": EXTRACT_SYSTEM},
             {"role": "user", "content": user},
         ],
-        temperature=0,
+        **completion_kwargs(settings.llm_model, temperature=0),
     )
     content = response.choices[0].message.content or "{}"
     data = parse_json_payload(content)

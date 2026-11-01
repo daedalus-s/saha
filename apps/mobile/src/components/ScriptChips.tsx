@@ -8,9 +8,10 @@ type Props = {
   selected: string | null;
   onSelect: (script: string | null) => void;
   includeAll?: boolean;
+  labelFor?: (script: string) => string;
 };
 
-export function ScriptChips({ scripts, selected, onSelect, includeAll = true }: Props) {
+export function ScriptChips({ scripts, selected, onSelect, includeAll = true, labelFor }: Props) {
   const unique = [...(includeAll ? ["all"] : []), ...Array.from(new Set(scripts))];
   return (
     <View style={styles.row}>
@@ -24,7 +25,7 @@ export function ScriptChips({ scripts, selected, onSelect, includeAll = true }: 
             style={[styles.chip, active && styles.active]}
           >
             <Text style={[styles.label, active && styles.activeLabel]}>
-              {script === "all" ? "All scripts" : scriptLabel(script)}
+              {script === "all" ? "All scripts" : (labelFor ?? scriptLabel)(script)}
             </Text>
           </Pressable>
         );

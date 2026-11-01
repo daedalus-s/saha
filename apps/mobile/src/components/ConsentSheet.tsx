@@ -22,8 +22,8 @@ export function ConsentSheet({ visible, onContinue, onNotNow }: Props) {
           <Text style={styles.body}>
             The sloka or mantra name you type, and the script you select, are sent to our server
             and then to a third-party AI (Gemini) so it can return the lyrics. If you later tap
-            Show meaning, verse text is sent to an AI language-model provider to generate an
-            English meaning.
+            a meaning language, verse text is sent to an AI language-model provider to generate
+            a meaning in that language.
           </Text>
           <Text style={styles.body}>
             We do not sell this data. You can withdraw permission on the Search screen; new searches

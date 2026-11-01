@@ -1,8 +1,8 @@
 # Privacy Policy — Saha
 
-Last updated: 17 September 2026
+Last updated: 31 October 2026
 
-Saha (“the app”) helps you look up Hindu sloka and mantra lyrics, transliterate them, generate an English meaning, and export a PDF. This policy describes what we collect and why.
+Saha (“the app”) helps you look up Hindu sloka and mantra lyrics, transliterate them, generate a meaning in a language you choose, and export a PDF. This policy describes what we collect and why.
 
 ## Who we are
 
@@ -11,7 +11,7 @@ Saha is operated by the publisher listed on the App Store listing. Contact: the 
 ## Information we process
 
 - **Search queries.** When you search for a sloka, the text you type and the script you select are sent to our backend.
-- **Verse text.** If you tap Show meaning, the verses are sent to an AI language-model provider to generate an English meaning.
+- **Verse text.** If you choose a meaning language, the verses are sent to an AI language-model provider to generate a meaning in that language.
 - **Device-only data.** Recent searches, saved slokas, exported PDFs, and your data-sharing permission stay on your device. We do not run user accounts in version 1.
 - **Technical logs.** Our host may record IP address, request time, and status code for security and rate limiting. Logs are kept only as long as needed to operate the service.
 
@@ -37,7 +37,7 @@ On-device history, saved items, and consent remain until you clear them or unins
 
 ## Your choices
 
-Before the first search (and before Show meaning if you have not already agreed), the app shows a disclosure sheet. You must tap **Continue** before we send your query or verse text to third parties, including third-party AI. **Not now** cancels that action. You can withdraw permission on the Search screen; new searches and meanings will not run until you agree again. You can delete local history and saved items in the app, or by uninstalling. Because we do not create accounts, there is no cloud profile to delete.
+Before the first search (and before the first meaning, if you have not already agreed), the app shows a disclosure sheet. You must tap **Continue** before we send your query or verse text to third parties, including third-party AI. **Not now** cancels that action. You can withdraw permission on the Search screen; new searches and meanings will not run until you agree again. You can delete local history and saved items in the app, or by uninstalling. Because we do not create accounts, there is no cloud profile to delete.
 
 ## Children
 

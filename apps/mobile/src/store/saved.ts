@@ -20,7 +20,6 @@ export const useSaved = create<SavedState>()(
       items: [],
       save: (version) => {
         const id = idFor(version);
-        if (get().items.some((item) => item.id === id)) return;
         const item: SavedItem = {
           id,
           title: version.title,
@@ -32,7 +31,8 @@ export const useSaved = create<SavedState>()(
           savedAt: new Date().toISOString(),
           ai_generated: version.ai_generated,
         };
-        set({ items: [item, ...get().items] });
+        const rest = get().items.filter((entry) => entry.id !== id);
+        set({ items: [item, ...rest] });
       },
       remove: (id) => set({ items: get().items.filter((item) => item.id !== id) }),
     }),

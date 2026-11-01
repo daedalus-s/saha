@@ -4,6 +4,20 @@ from app.search.mock import MockSearchProvider
 from app.search import search_sloka
 
 
+def test_expand_queries_keeps_tamil_name_without_bad_romanization():
+    name = "ஹனுமான் சாலிசா"
+    queries = expand_queries(name)
+    assert queries[0] == name
+    assert all("jhālijhā" not in item and "jhalijha" not in item.casefold() for item in queries)
+
+
+def test_expand_queries_adds_iast_for_devanagari_name():
+    name = "हनुमान चालीसा"
+    queries = expand_queries(name)
+    assert queries[0] == name
+    assert any("hanum" in item.casefold() for item in queries)
+
+
 def test_expand_queries_starts_with_the_raw_name():
     queries = expand_queries("Hanuman Chalisa")
     assert queries[0] == "Hanuman Chalisa"

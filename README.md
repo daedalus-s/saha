@@ -1,6 +1,6 @@
 # Saha
 
-Saha is a mobile app that finds Hindu slokas and mantras on the web, lists the versions it finds (grouped by script), transliterates them into another Indic script, generates an English meaning, and exports the result as a PDF.
+Saha is a mobile app that finds Hindu slokas and mantras on the web, lists the versions it finds (grouped by script), transliterates them into another Indic script, generates a meaning in a language you choose, and exports the result as a PDF.
 
 The repo is a monorepo:
 
@@ -14,12 +14,12 @@ The app never holds LLM or search API keys. It talks only to the Python backend.
 
 ## Features (v1)
 
-- Search by sloka / mantra name
+- Search by sloka / mantra name, including a name typed in Tamil script
 - Web search with per-script query expansion (Telugu, Tamil, Sanskrit, …)
 - Page fetch + LLM verse extraction, with a heuristic fallback
 - Script detection and near-duplicate collapsing
 - Transliteration: Devanagari, Tamil, Telugu, Kannada, Malayalam, Gujarati, Bengali, IAST, ITRANS
-- AI-generated English meaning (labelled as such — not copied from source sites)
+- AI-generated meaning in English, Hindi, Tamil, Telugu, Kannada, Malayalam, Gujarati, or Bengali (labelled as such — not copied from source sites)
 - PDF export of original + transliteration + meaning
 - Local saved items and recent searches (no accounts)
 

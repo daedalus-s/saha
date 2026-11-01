@@ -11,6 +11,6 @@ services:
       - key: SEARCH_PROVIDER
         value: gemini
       - key: LLM_MODEL
-        value: gemini/gemini-2.0-flash
+        value: gemini/gemini-3.8-flash
       - key: CACHE_DIR
         value: /app/.cache

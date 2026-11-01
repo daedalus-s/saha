@@ -9,7 +9,7 @@ from app.search.base import SearchProvider
 from app.search.brave import BraveSearchProvider
 from app.search.expand import expand_queries, merge_hits
 from app.search.google_cse import GoogleCseSearchProvider
-from app.search.llm_lyrics import generate_lyrics
+from app.search.llm_lyrics import lookup_lyrics, suggest_search_terms
 from app.search.mock import MockSearchProvider
 
 logger = logging.getLogger(__name__)
@@ -33,9 +33,16 @@ def build_provider(settings: Settings | None = None) -> SearchProvider:
 
 
 async def _lyrics_search(query: str, script: str, settings: Settings) -> SearchResponse:
-    version = await generate_lyrics(query, script, settings=settings)
-    if version is None:
-        return SearchResponse(hits=[], versions=[], expanded_queries=[query.strip()])
+    lookup = await lookup_lyrics(query, script, settings=settings)
+    if lookup.version is None:
+        return SearchResponse(
+            hits=[],
+            versions=[],
+            expanded_queries=[query.strip()],
+            suggestions=lookup.suggestions,
+            ambiguous=lookup.ambiguous,
+        )
+    version = lookup.version
     hit = SearchHit(
         url=version.source_url,
         title=version.title,
@@ -82,4 +89,13 @@ async def search_sloka(
     if not batches and errors:
         raise errors[0]
     merged = merge_hits(batches, limit=_HIT_LIMIT)
-    return SearchResponse(hits=merged, expanded_queries=queries)
+    suggestions: list[str] = []
+    ambiguous = False
+    if not merged and settings.llm_enabled:
+        suggestions, ambiguous = await suggest_search_terms(query, settings)
+    return SearchResponse(
+        hits=merged,
+        expanded_queries=queries,
+        suggestions=suggestions,
+        ambiguous=ambiguous,
+    )

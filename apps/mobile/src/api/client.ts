@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 
 import type {
   ExtractResponse,
+  LyricsContinueResponse,
   SearchResponse,
   TransliterateResponse,
   TranslateResponse,
@@ -71,6 +72,14 @@ export const api = {
 
   extract: (url: string, query?: string) => request<ExtractResponse>("/extract", { url, query }),
 
+  continueLyrics: (body: {
+    query: string;
+    script: string;
+    offset: number;
+    title?: string;
+    previous_tail?: string[];
+  }) => request<LyricsContinueResponse>("/lyrics/continue", body),
+
   transliterate: (verses: string[], source_script: string, target_script: string) =>
     request<TransliterateResponse>("/transliterate", {
       verses,
@@ -78,11 +87,11 @@ export const api = {
       target_script,
     }),
 
-  translate: (verses: string[], source_script: string, title?: string) =>
+  translate: (verses: string[], source_script: string, title?: string, target_language = "en") =>
     request<TranslateResponse>("/translate", {
       verses,
       source_script,
-      target_language: "en",
+      target_language,
       title,
     }),
 };

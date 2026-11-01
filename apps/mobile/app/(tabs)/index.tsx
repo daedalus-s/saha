@@ -19,7 +19,8 @@ import { useConsent } from "../../src/store/consent";
 import { useHistory } from "../../src/store/history";
 import { useSearchSession } from "../../src/store/session";
 import { colors } from "../../src/theme";
-import { SCRIPTS } from "../../src/utils/scripts";
+import { fontForScript } from "../../src/utils/fonts";
+import { detectQueryScript, SCRIPTS, scriptLabel } from "../../src/utils/scripts";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -33,8 +34,11 @@ export default function SearchScreen() {
   const [script, setScript] = useState<string>("devanagari");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [ambiguous, setAmbiguous] = useState(false);
   const [sheetVisible, setSheetVisible] = useState(false);
   const pendingQuery = useRef<string | null>(null);
+  const queryScript = detectQueryScript(query);
   const health = useQuery({
     queryKey: ["health"],
     queryFn: api.health,
@@ -43,12 +47,13 @@ export default function SearchScreen() {
 
   async function actuallySearch(value: string) {
     const trimmed = value.trim();
-    if (!trimmed) return;
+    if (!trimmed || busy) return;
     setBusy(true);
     setError(null);
+    setSuggestions([]);
+    setAmbiguous(false);
     try {
       const result = await api.search(trimmed, script);
-      addRecent(trimmed);
       const session = useSearchSession.getState();
       session.start(trimmed, result.hits, result.versions);
       if (!result.versions?.length && result.hits.length) {
@@ -60,10 +65,16 @@ export default function SearchScreen() {
       const versions = useSearchSession.getState().readyVersions();
       const chosen =
         versions.find((version) => version.script === script) ?? versions[0];
-      if (!chosen) {
-        setError("No lyrics found. Try another spelling or a different script.");
+      const alternatives = result.suggestions ?? [];
+      if (!chosen || result.ambiguous) {
+        setSuggestions(alternatives);
+        setAmbiguous(Boolean(result.ambiguous));
+        if (!alternatives.length) {
+          setError("No lyrics found. Try another spelling or a different script.");
+        }
         return;
       }
+      addRecent(trimmed);
       useSearchSession.getState().select(chosen);
       router.push("/sloka/view");
     } catch (err) {
@@ -102,8 +113,9 @@ export default function SearchScreen() {
       />
       <Text style={styles.kicker}>Find a sloka or mantra</Text>
       <Text style={styles.lede}>
-        Pick a script, type a sloka or mantra name, and Gemini returns the lyrics. Then
-        transliterate, add an English meaning, and export a PDF.
+        Type a sloka or mantra name in English or in Tamil script, pick the script for the
+        lyrics, and Gemini returns them. Then transliterate, show a meaning in English,
+        Hindi, Tamil, or another supported language, and export a PDF.
       </Text>
       <View style={styles.searchBox}>
         <TextInput
@@ -111,11 +123,19 @@ export default function SearchScreen() {
           onChangeText={setQuery}
           placeholder="e.g. Hanuman Chalisa"
           placeholderTextColor={colors.muted}
-          style={styles.input}
+          style={[styles.input, { fontFamily: fontForScript(queryScript) }]}
           autoCorrect={false}
           returnKeyType="search"
           onSubmitEditing={() => runSearch(query)}
         />
+        {queryScript === "latin" ? (
+          <Text style={styles.nameHint}>
+            Tamil example:{" "}
+            <Text style={styles.tamilExample}>ஹனுமான் சாலிசா</Text>
+          </Text>
+        ) : (
+          <Text style={styles.nameHint}>Name entered in {scriptLabel(queryScript)}</Text>
+        )}
         <Text style={styles.section}>Lyrics script</Text>
         <ScriptChips
           scripts={[...SCRIPTS]}
@@ -140,6 +160,29 @@ export default function SearchScreen() {
           Cannot reach the API at the configured URL. Start the backend or set EXPO_PUBLIC_API_URL.
         </Text>
       ) : null}
+      {suggestions.length ? (
+        <View style={styles.recent}>
+          <Text style={styles.section}>
+            {ambiguous
+              ? "That name could be several slokas. Did you mean:"
+              : "No lyrics found. Did you mean:"}
+          </Text>
+          {suggestions.map((item) => (
+            <Pressable
+              key={item}
+              onPress={() => {
+                setQuery(item);
+                runSearch(item);
+              }}
+              style={styles.recentItem}
+            >
+              <Text style={[styles.recentText, { fontFamily: fontForScript(detectQueryScript(item)) }]}>
+                {item}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       {recent.length ? (
@@ -159,8 +202,8 @@ export default function SearchScreen() {
       ) : null}
 
       <Text style={styles.footer}>
-        Lyrics are AI-generated and labelled as such; verify with a printed edition. English
-        meanings are also AI-generated; verify with a scholar.{" "}
+        Lyrics are AI-generated and labelled as such; verify with a printed edition. Meanings
+        are also AI-generated; verify with a scholar.{" "}
         <Text style={styles.link} onPress={() => Linking.openURL(`${API_URL}/privacy`)}>
           Privacy policy
         </Text>
@@ -206,6 +249,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 16,
+    color: colors.ink,
+  },
+  nameHint: {
+    color: colors.muted,
+    fontSize: 13,
+  },
+  tamilExample: {
+    fontFamily: "NotoSansTamil_400Regular",
     color: colors.ink,
   },
   button: {

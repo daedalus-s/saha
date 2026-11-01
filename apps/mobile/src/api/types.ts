@@ -9,6 +9,8 @@ export type SearchResponse = {
   hits: SearchHit[];
   expanded_queries: string[];
   versions?: SlokaVersion[];
+  suggestions?: string[];
+  ambiguous?: boolean;
 };
 
 export type SlokaVersion = {
@@ -23,6 +25,15 @@ export type SlokaVersion = {
   category?: string | null;
   also_on: string[];
   ai_generated?: boolean;
+  has_more?: boolean;
+  next_offset?: number;
+};
+
+export type LyricsContinueResponse = {
+  verses: string[];
+  has_more: boolean;
+  next_offset: number;
+  title: string;
 };
 
 export type ExtractResponse = {

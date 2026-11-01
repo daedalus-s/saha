@@ -14,16 +14,19 @@ from app.extract import extract_from_url
 from app.models import (
     ExtractRequest,
     ExtractResponse,
+    LyricsContinueRequest,
+    LyricsContinueResponse,
     SearchRequest,
     SearchResponse,
-    TransliterateRequest,
-    TransliterateResponse,
     TranslateRequest,
     TranslateResponse,
+    TransliterateRequest,
+    TransliterateResponse,
 )
 from app.search import search_sloka
-from app.transliterate import SCHEME_BY_SCRIPT, transliterate_verses
+from app.search.llm_lyrics import continue_lyrics
 from app.translate import translate_verses
+from app.transliterate import SCHEME_BY_SCRIPT, transliterate_verses
 
 settings = get_settings()
 limiter = Limiter(key_func=get_remote_address)
@@ -158,6 +161,25 @@ async def search(request: Request, body: SearchRequest):
         raise HTTPException(status_code=502, detail=f"Search failed: {exc}") from exc
 
 
+@app.post("/lyrics/continue", response_model=LyricsContinueResponse)
+@limiter.limit("60/minute")
+async def lyrics_continue(request: Request, body: LyricsContinueRequest):
+    try:
+        return await continue_lyrics(
+            body.query,
+            script=body.script,
+            offset=body.offset,
+            title=body.title,
+            previous_tail=body.previous_tail,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"Lyrics continuation failed: {exc}") from exc
+
+
 @app.post("/extract", response_model=ExtractResponse)
 @limiter.limit("40/minute")
 async def extract(request: Request, body: ExtractRequest):
@@ -183,7 +205,7 @@ async def transliterate(request: Request, body: TransliterateRequest):
 
 
 @app.post("/translate", response_model=TranslateResponse)
-@limiter.limit("20/minute")
+@limiter.limit("60/minute")
 async def translate(request: Request, body: TranslateRequest):
     try:
         return await translate_verses(
@@ -192,6 +214,8 @@ async def translate(request: Request, body: TranslateRequest):
             target_language=body.target_language,
             title=body.title,
         )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:

@@ -7,7 +7,9 @@ export type PdfInput = {
   transliteration?: string[];
   transliterationScript?: string;
   meanings?: string[];
+  meaningLanguage?: string;
   aiGenerated?: boolean;
+  incomplete?: boolean;
 };
 
 export function pdfFileName(title: string): string {
@@ -41,10 +43,13 @@ export function buildPdfHtml(input: PdfInput): string {
       : "";
   const meaning =
     input.meanings && input.meanings.length
-      ? `<h2>Meaning</h2>
+      ? `<h2>Meaning${input.meaningLanguage ? ` (${escapeHtml(input.meaningLanguage)})` : ""}</h2>
          ${input.meanings.map((m) => `<p class="meaning">${escapeHtml(m)}</p>`).join("\n")}
          <p class="disclaimer">AI-generated meaning; verify with a scholar.</p>`
       : "";
+  const partial = input.incomplete
+    ? `<p class="meta">These are the verses loaded so far, not the full work.</p>`
+    : "";
   const sourceMeta = input.aiGenerated
     ? `<p class="meta">Source: AI-generated lyrics (Gemini); verify with a printed edition.<br/>
   Script: ${escapeHtml(input.originalScript)} · Generated ${escapeHtml(input.generatedAt)}</p>`
@@ -64,7 +69,8 @@ export function buildPdfHtml(input: PdfInput): string {
     .meta { color: #7A6A58; font-size: 12px; margin-bottom: 24px; }
     .verse { font-size: 16px; line-height: 1.7; margin: 0 0 8px;
       font-family: "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Malayalam", "Noto Sans Gujarati", "Noto Sans Bengali", "Noto Serif", serif; }
-    .meaning { font-size: 14px; line-height: 1.5; margin: 0 0 10px; }
+    .meaning { font-size: 14px; line-height: 1.5; margin: 0 0 10px;
+      font-family: "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Malayalam", "Noto Sans Gujarati", "Noto Sans Bengali", "Noto Serif", serif; }
     .disclaimer { font-size: 11px; color: #7A6A58; margin-top: 16px; font-style: italic; }
     a { color: #C45C26; }
   </style>
@@ -72,6 +78,7 @@ export function buildPdfHtml(input: PdfInput): string {
 <body>
   <h1>${escapeHtml(input.title)}</h1>
   ${sourceMeta}
+  ${partial}
   <h2>Original</h2>
   ${original}
   ${xlit}
